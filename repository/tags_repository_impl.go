@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"golang-crud-gin/data/request"
 	"golang-crud-gin/helper"
 	"golang-crud-gin/model"
 
@@ -39,13 +40,19 @@ func (t *TagsRepositoryImpl) FindById(tagsId int) (tags model.Tags, err error) {
 }
 
 // Save implements TagsRepository.
-func (*TagsRepositoryImpl) Save(tags model.Tags) {
-	panic("unimplemented")
+func (t *TagsRepositoryImpl) Save(tags model.Tags) {
+	result := t.Db.Create(&tags)
+	helper.ErrorPanic(result.Error)
 }
 
 // Update implements TagsRepository.
-func (*TagsRepositoryImpl) Update(tags model.Tags) {
-	panic("unimplemented")
+func (t *TagsRepositoryImpl) Update(tags model.Tags) {
+	var updateTag = request.UpdateTagsRequest{
+		Id:   tags.id,
+		Name: tags.Name,
+	}
+	result := t.Db.Model(&tags).Updates(updateTag)
+	helper.ErrorPanic(result.Error)
 }
 
 func NewTagsRepositoryImpl(Db *gorm.DB) TagsRepository {
